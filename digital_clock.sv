@@ -13,7 +13,7 @@ module digital_clock (
 
 always_ff @(posedge clk) begin
 
-  // Reset → both go to 0
+  // Reset condition
   if (reset) begin
     seconds <= 6'd0;
     minutes <= 6'd0;
@@ -21,13 +21,19 @@ always_ff @(posedge clk) begin
 
   else begin
 
-    // When seconds reaches 59 → reset seconds + increment minutes
+    // When seconds reaches 59
     if (seconds == 6'd59) begin
       seconds <= 6'd0;
-      minutes <= minutes + 1;   // minutes increments only here
+
+      // Increment minutes
+      if (minutes == 6'd59)
+        minutes <= 6'd0;     // minute rollover
+      else
+        minutes <= minutes + 1;
+
     end
 
-    // Otherwise keep counting seconds
+    // Otherwise increment seconds
     else begin
       seconds <= seconds + 1;
     end
